@@ -1,4 +1,8 @@
-import { HttpService, getWinstonLogger } from '@dbc-tech/http-kit'
+import {
+  HttpService,
+  HttpServiceOptions,
+  getWinstonLogger,
+} from '@dbc-tech/http-kit'
 import got from 'got-cjs'
 import { Logger } from 'winston'
 import { DefaultCountLimit, DefaultMaskProperties } from './constants'
@@ -11,7 +15,7 @@ import {
   RexSearchCriteria,
 } from './interfaces/rex-http.interface'
 
-export class RexHttpService {
+export class RexClient {
   http: HttpService
   logger: Logger
   countLimit: number
@@ -20,7 +24,7 @@ export class RexHttpService {
     const winstonLogger =
       config.logger ?? getWinstonLogger(config.defaultLoggerOptions)
     this.countLimit = config.countLimit ?? DefaultCountLimit
-    this.http = new HttpService(this.config.baseUrl, this.getAccessToken, {
+    const httpConfig: HttpServiceOptions = {
       logging: {
         logger: winstonLogger,
         maskProperties: DefaultMaskProperties,
@@ -33,7 +37,12 @@ export class RexHttpService {
           limit: this.countLimit,
         },
       },
-    })
+    }
+    this.http = new HttpService(
+      this.config.baseUrl,
+      this.getAccessToken,
+      httpConfig,
+    )
 
     this.logger = winstonLogger.child({ context: 'rex-client' })
     this.logger.debug(`Using Rex baseUrl: ${config.baseUrl}`)
@@ -49,6 +58,22 @@ export class RexHttpService {
 
   async GetListings(criteria?: RexSearchCriteria) {
     return this.paginateSearch<RexListing>('listings', criteria)
+  }
+
+  async getCustomFieldDefinition(): Promise<
+    Record<string, boolean | string | any>
+  > {
+    const existingFieldsBody = {
+      module_name: 'listings',
+      include_hidden: false,
+    }
+
+    const response = await this.http.postJson(
+      this.http.urlFromPath('admin-custom-fields/get-definition'),
+      existingFieldsBody,
+    )
+
+    return response.data
   }
 
   async paginateSearch<TResult>(
@@ -90,11 +115,10 @@ export class RexHttpService {
   }
 
   transformPaginateResult<T>(url: string, response): Array<T> {
-    const responseBody: string = response.body
-    const check = JSON.parse(responseBody)
-
-    this.logger.debug(`Rex ${url} API response: ${JSON.stringify(check)}`)
-    return check.result.rows
+    this.logger.debug(
+      `Rex ${url} API response: ${JSON.stringify(response.body)}`,
+    )
+    return response.body.result.rows
   }
 
   getNextPaginateRequest<T>(
@@ -117,16 +141,17 @@ export class RexHttpService {
   }
 
   getAccessToken = async (): Promise<string> => {
-    const url = new URL('Authentication/login', this.config.baseUrl)
-    const { email, password, accountId: account_id } = this.config
-
     const response: any = await got
-      .post(url, {
-        headers: this.config.customHeaders,
+      .post('https://api.rexsoftware.com/v1/rex/Authentication/login', {
+        retry: {
+          limit: 3,
+        },
+        headers: {
+          'X-App-Identifier': 'Integration:Offertoown',
+        },
         json: {
-          email,
-          password,
-          account_id,
+          email: 'mihir.patil@deepbluecompany.com.au',
+          password: 'Temp@123',
         },
       })
       .json()

@@ -1,5 +1,6 @@
 export * from './constants'
 export * from './dtos'
 export * from './interfaces'
+export * from './rex-client'
 export * from './types'
 export * from './utils'
