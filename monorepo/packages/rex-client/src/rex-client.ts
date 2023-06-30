@@ -43,7 +43,7 @@ export class RexHttpService {
     return this.paginateSearch<RexAccountUser>('account-users', criteria)
   }
 
-  async GetFeedback(criteria?: RexSearchCriteria) {
+  async GetFeedbacks(criteria?: RexSearchCriteria) {
     return this.paginateSearch<RexFeedback>('feedback', criteria)
   }
 
@@ -118,18 +118,16 @@ export class RexHttpService {
 
   getAccessToken = async (): Promise<string> => {
     const url = new URL('Authentication/login', this.config.baseUrl)
-    const { email, password, accountId } = this.config
-
-    const body = {
-      email,
-      password,
-      account_id: accountId ?? undefined,
-    }
+    const { email, password, accountId: account_id } = this.config
 
     const response: any = await got
       .post(url, {
         headers: this.config.customHeaders,
-        json: body,
+        json: {
+          email,
+          password,
+          account_id,
+        },
       })
       .json()
 
