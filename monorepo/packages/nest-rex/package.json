@@ -1,0 +1,37 @@
+{
+  "name": "@dbc-tech/nest-rex",
+  "version": "1.4.5",
+  "description": "Rex Nest integration",
+  "author": "DBC",
+  "private": false,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "lint": "eslint . --fix",
+    "test": "echo no test yet",
+    "build": "rimraf ./dist && tsc --build tsconfig.build.json",
+    "build:pack": "yarn run build && yarn pack"
+  },
+  "dependencies": {
+    "@dbc-tech/rex-client": "*"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^9.0.0",
+    "rxjs": "^7.6.0",
+    "winston": "^3.9.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^9.0.0",
+    "rxjs": "^7.6.0",
+    "winston": "^3.9.0"
+  },
+  "packageManager": "yarn@1.22.19",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@dbc-tech/rex-client",
+  "version": "1.4.5",
+  "description": "Rex CRM integration",
+  "author": "DBC",
+  "private": false,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "lint": "eslint . --fix",
+    "test": "jest",
+    "test:debug": "jest --runInBand --no-cache",
+    "build": "rimraf ./dist && tsc --build tsconfig.build.json",
+    "build:pack": "yarn run build && yarn pack"
+  },
+  "dependencies": {
+    "@dbc-tech/http-kit": "^1.4.4",
+    "class-transformer": "^0.5.1",
+    "got-cjs": "^12.5.4",
+    "luxon": "^3.2.1"
+  },
+  "devDependencies": {
+    "nock": "^13.2.9",
+    "tsconfig": "*",
+    "typescript": "^5.0.2",
+    "winston": "^3.9.0"
+  },
+  "peerDependencies": {
+    "winston": "^3.9.0"
+  },
+  "packageManager": "yarn@1.22.19",
+  "jest": {
+    "testEnvironment": "node",
+    "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "./src/setupTests.ts"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  }
+}
