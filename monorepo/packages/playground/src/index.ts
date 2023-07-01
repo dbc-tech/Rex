@@ -8,14 +8,14 @@ const rex = new RexClient({
   email: process.env['REX_EMAIL'],
   password: process.env['REX_PASSWORD'],
   customHeaders: {
-    'X-App-Identifier': 'Integration:Offertoown',
+    'X-App-Identifier': process.env['REX_APP_IDENTIFIER'],
   },
 })
 
 const start = async () => {
-  const response = await rex.GetAccountUsers()
-  for await (const agent of response) {
-    console.log(agent)
+  const accountUsers = await rex.GetAccountUsers()
+  for await (const user of accountUsers) {
+    console.log(user)
   }
 }
 
