@@ -1,5 +1,5 @@
 import { RexClient } from '@dbc-tech/rex-client'
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 
 dotenv.config()
 

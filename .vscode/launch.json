@@ -1,0 +1,15 @@
+{
+    "configurations": [{
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "cwd": "${workspaceFolder}/monorepo/packages/playground",
+        "runtimeArgs": [
+            "-r",
+            "${workspaceFolder}/monorepo/node_modules/ts-node/register"
+        ],
+        "args": [
+            "${workspaceFolder}/monorepo/packages/playground/src/index.ts"
+        ]
+    }],
+}
