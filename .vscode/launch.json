@@ -2,7 +2,7 @@
     "configurations": [{
         "type": "node",
         "request": "launch",
-        "name": "Launch Program",
+        "name": "Debug Playground",
         "cwd": "${workspaceFolder}/monorepo/packages/playground",
         "runtimeArgs": [
             "-r",
