@@ -28,8 +28,7 @@ describe('RexClient', () => {
       const currItems = [1]
       it('should return false', () => {
         const response = rexHttpService.getNextPaginateRequest(
-          baseUrl,
-          currItems,
+          currItems.length,
           count,
           params,
         )
@@ -42,8 +41,7 @@ describe('RexClient', () => {
 
       it('should return a body object', () => {
         const response = rexHttpService.getNextPaginateRequest(
-          baseUrl,
-          currentItems,
+          currentItems.length,
           count,
           params,
         )
@@ -66,8 +64,7 @@ describe('RexClient', () => {
 
       it('should return a body object', () => {
         const response = rexHttpService.getNextPaginateRequest(
-          baseUrl,
-          currentItems,
+          currentItems.length,
           count,
         )
         expect(response).toEqual({

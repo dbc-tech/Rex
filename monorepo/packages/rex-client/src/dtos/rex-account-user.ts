@@ -5,7 +5,6 @@ export class RexAccountUser {
   last_name: string
   email: string
   user_account_status: RexAccountUserType
-  id: string
   settings: RexAccountUserSetting
   segmentation_role: RexAccountUserSegmentation
 }

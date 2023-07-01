@@ -1,7 +1,7 @@
 import {
   RexListingSubCategory,
   RexPropertyCategory,
-} from './rex-listing-categories.dto'
+} from './rex-listing-categories'
 
 export class RexListingProperty {
   property_category: RexPropertyCategory

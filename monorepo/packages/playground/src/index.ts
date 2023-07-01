@@ -10,12 +10,15 @@ const rex = new RexClient({
   customHeaders: {
     'X-App-Identifier': process.env['REX_APP_IDENTIFIER'],
   },
+  defaultLoggerOptions: {
+    level: 'debug',
+  },
 })
 
 const start = async () => {
-  const accountUsers = await rex.GetAccountUsers()
-  for await (const user of accountUsers) {
-    console.log(user)
+  const items = await rex.getAccountUsers()
+  for await (const item of items) {
+    console.log(item)
   }
 }
 

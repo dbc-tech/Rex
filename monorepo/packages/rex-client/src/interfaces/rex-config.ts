@@ -1,4 +1,5 @@
 import { DefaultLoggerOptions } from '@dbc-tech/http-kit'
+import { Headers } from 'got-cjs'
 import { Logger } from 'winston'
 
 export interface RexConfig {
@@ -9,5 +10,6 @@ export interface RexConfig {
   logger?: Logger
   defaultLoggerOptions?: DefaultLoggerOptions
   countLimit?: number
-  customHeaders?: Record<string, string | string[] | undefined>
+  customHeaders?: Headers
+  backoff?: number
 }

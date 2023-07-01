@@ -1,68 +1,92 @@
 import {
+  DtoConstructor,
   HttpService,
-  HttpServiceOptions,
   getWinstonLogger,
+  plainToDto,
 } from '@dbc-tech/http-kit'
-import got from 'got-cjs'
+import got, { Headers } from 'got-cjs'
 import { Logger } from 'winston'
-import { DefaultCountLimit, DefaultMaskProperties } from './constants'
+import {
+  DefaultBackoff,
+  DefaultCountLimit,
+  DefaultMaskProperties,
+} from './constants'
 import { RexListing, RexAccountUser } from './dtos'
-import { RexFeedback } from './dtos/rex-feedback.dto'
+import { RexFeedback } from './dtos/rex-feedback'
 import { RexConfig } from './interfaces/rex-config'
 import {
   RexGotHttpRequest,
   RexRequestBody,
+  RexResponse,
   RexSearchCriteria,
 } from './interfaces/rex-http.interface'
 
 export class RexClient {
+  countLimit: number
+  backoff: number
+  customHeaders: Headers
   http: HttpService
   logger: Logger
-  countLimit: number
 
   constructor(private readonly config: RexConfig) {
+    this.countLimit = config.countLimit ?? DefaultCountLimit
+    this.backoff = config.backoff ?? DefaultBackoff
+    this.customHeaders = config.customHeaders ?? {}
+
     const winstonLogger =
       config.logger ?? getWinstonLogger(config.defaultLoggerOptions)
-    this.countLimit = config.countLimit ?? DefaultCountLimit
-    const httpConfig: HttpServiceOptions = {
+    this.http = new HttpService(this.config.baseUrl, this.getAccessToken, {
       logging: {
         logger: winstonLogger,
         maskProperties: DefaultMaskProperties,
       },
       http: {
-        headers: this.config.customHeaders,
-        prefixUrl: config.baseUrl,
+        headers: this.customHeaders,
         method: 'POST',
         json: {
           limit: this.countLimit,
         },
       },
-    }
-    this.http = new HttpService(
-      this.config.baseUrl,
-      this.getAccessToken,
-      httpConfig,
-    )
+    })
 
     this.logger = winstonLogger.child({ context: 'rex-client' })
-    this.logger.debug(`Using Rex baseUrl: ${config.baseUrl}`)
   }
 
-  async GetAccountUsers(criteria?: RexSearchCriteria) {
-    return this.paginateSearch<RexAccountUser>('account-users', criteria)
+  async getAccountUsers(criteria?: RexSearchCriteria) {
+    this.logger.debug({ method: 'getAccountUsers', criteria })
+
+    return this.paginateSearch<RexAccountUser>(
+      'account-users/search',
+      RexAccountUser,
+      criteria,
+    )
   }
 
-  async GetFeedbacks(criteria?: RexSearchCriteria) {
-    return this.paginateSearch<RexFeedback>('feedback', criteria)
+  async getFeedbacks(criteria?: RexSearchCriteria) {
+    this.logger.debug({ method: 'getFeedbacks', criteria })
+
+    return this.paginateSearch<RexFeedback>(
+      'feedback/search',
+      RexFeedback,
+      criteria,
+    )
   }
 
-  async GetListings(criteria?: RexSearchCriteria) {
-    return this.paginateSearch<RexListing>('listings', criteria)
+  async getListings(criteria?: RexSearchCriteria) {
+    this.logger.debug({ method: 'getListings', criteria })
+
+    return this.paginateSearch<RexListing>(
+      'listings/search',
+      RexListing,
+      criteria,
+    )
   }
 
   async getCustomFieldDefinition(): Promise<
     Record<string, boolean | string | any>
   > {
+    this.logger.debug({ method: 'getCustomFieldDefinition' })
+
     const existingFieldsBody = {
       module_name: 'listings',
       include_hidden: false,
@@ -77,59 +101,62 @@ export class RexClient {
   }
 
   async paginateSearch<TResult>(
-    url: string,
+    path: string,
+    dtoConstructor?: DtoConstructor<Array<TResult>>,
     params?: RexSearchCriteria,
   ): Promise<AsyncIterableIterator<TResult>> {
     let count = 1
-
     const requestJson = this.createSearchBody(this.countLimit, params)
-    this.logger.debug(
-      `Paginate request for Rex ${url} API with params: ${JSON.stringify(
-        requestJson,
-      )}`,
-    )
-    const response: any = this.http.http.paginate<TResult>(`${url}/search`, {
+    const url = this.http.urlFromPath(path)
+
+    const response: any = this.http.http.paginate<TResult>(url, {
       json: requestJson,
       pagination: {
         transform: (response): Array<TResult> => {
-          const rex = response as any
-          return rex.body.result.rows
+          const rex = response.body as RexResponse<TResult>
+          const rows = plainToDto<Array<TResult>>(
+            rex.result.rows,
+            dtoConstructor,
+          )
+          return rows
         },
         paginate: ({ currentItems }) => {
-          if (currentItems.length < this.countLimit) {
+          const numberOfItems = currentItems.length
+          if (numberOfItems < this.countLimit) {
             return false
           } else {
-            count += currentItems.length
+            count += numberOfItems
             return this.getNextPaginateRequest(
-              url,
-              currentItems,
+              numberOfItems,
               count,
               requestJson,
             )
           }
         },
-        backoff: 1000,
+        backoff: this.backoff,
       },
     })
 
     return response
   }
 
-  getNextPaginateRequest<T>(
-    url: string,
-    currentItems: Array<T>,
+  getNextPaginateRequest(
+    numberOfItems: number,
     count: number,
     requestParams?: RexRequestBody,
   ): false | RexGotHttpRequest {
-    if (currentItems.length < this.countLimit) {
+    this.logger.debug({
+      method: 'getNextPaginateRequest',
+      numberOfItems,
+      count,
+      requestParams,
+    })
+
+    if (numberOfItems < this.countLimit) {
       return false
     } else {
-      const json = this.createSearchBody(this.countLimit, requestParams, count)
-      this.logger.debug(
-        `Rex ${url} API paging to next offset: ${JSON.stringify(json)}`,
-      )
       return {
-        json,
+        json: this.createSearchBody(this.countLimit, requestParams, count),
       }
     }
   }
@@ -137,15 +164,24 @@ export class RexClient {
   getAccessToken = async (): Promise<string> => {
     const url = new URL('Authentication/login', this.config.baseUrl)
     const { email, password, accountId } = this.config
+    const json = {
+      email,
+      password,
+      account_id: accountId,
+    }
+    const headers = this.customHeaders
+
+    this.logger.debug({
+      method: 'getAccessToken',
+      url: url.toString(),
+      json: this.http.mask(json),
+      headers,
+    })
 
     const response: any = await got
       .post(url, {
-        headers: this.config.customHeaders ?? {},
-        json: {
-          email,
-          password,
-          account_id: accountId,
-        },
+        headers,
+        json,
       })
       .json()
 
@@ -154,9 +190,16 @@ export class RexClient {
 
   private createSearchBody(
     countLimit: number,
-    params?: Record<string, any>,
+    params?: RexSearchCriteria,
     offset = 0,
   ): RexRequestBody {
+    this.logger.debug({
+      method: 'createSearchBody',
+      countLimit,
+      params,
+      offset,
+    })
+
     if (params) {
       return {
         ...params,

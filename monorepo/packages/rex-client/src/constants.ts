@@ -5,13 +5,7 @@ export const RexAccountUserStatus = {
   disabled: 'disabled',
 } as const
 
-export const DefaultMaskProperties = [
-  'X-Client-ID',
-  'X-API-Key',
-  'email',
-  'mobile',
-  'homePhone',
-  'workPhone',
-]
+export const DefaultMaskProperties = ['email', 'password']
 
 export const DefaultCountLimit = 50
+export const DefaultBackoff = 1000
