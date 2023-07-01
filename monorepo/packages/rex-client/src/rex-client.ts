@@ -92,7 +92,8 @@ export class RexClient {
       json: requestJson,
       pagination: {
         transform: (response): Array<TResult> => {
-          return this.transformPaginateResult(url, response)
+          const rex = response as any
+          return rex.body.result.rows
         },
         paginate: ({ currentItems }) => {
           if (currentItems.length < this.countLimit) {
@@ -112,13 +113,6 @@ export class RexClient {
     })
 
     return response
-  }
-
-  transformPaginateResult<T>(url: string, response): Array<T> {
-    this.logger.debug(
-      `Rex ${url} API response: ${JSON.stringify(response.body)}`,
-    )
-    return response.body.result.rows
   }
 
   getNextPaginateRequest<T>(
@@ -141,17 +135,16 @@ export class RexClient {
   }
 
   getAccessToken = async (): Promise<string> => {
+    const url = new URL('Authentication/login', this.config.baseUrl)
+    const { email, password, accountId } = this.config
+
     const response: any = await got
-      .post('https://api.rexsoftware.com/v1/rex/Authentication/login', {
-        retry: {
-          limit: 3,
-        },
-        headers: {
-          'X-App-Identifier': 'Integration:Offertoown',
-        },
+      .post(url, {
+        headers: this.config.customHeaders ?? {},
         json: {
-          email: 'mihir.patil@deepbluecompany.com.au',
-          password: 'Temp@123',
+          email,
+          password,
+          account_id: accountId,
         },
       })
       .json()

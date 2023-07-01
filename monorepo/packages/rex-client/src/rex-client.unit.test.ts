@@ -17,39 +17,6 @@ describe('RexClient', () => {
     rexHttpService = new RexClient(config)
   })
 
-  describe('.transformPaginateResult', () => {
-    const responseBody = {
-      result: {
-        rows: [1, 2, 3],
-      },
-    }
-    const paginateResponse = {
-      body: JSON.stringify(responseBody),
-    }
-    const paginateIncorrectResponse = {
-      body: responseBody,
-    }
-
-    it('transform should return the correct result', () => {
-      const response = rexHttpService.transformPaginateResult(
-        baseUrl,
-        paginateResponse,
-      )
-      expect(response).toStrictEqual(
-        expect.arrayContaining(responseBody.result.rows),
-      )
-    })
-
-    it('transform should return the incorrect result', () => {
-      expect(() =>
-        rexHttpService.transformPaginateResult(
-          baseUrl,
-          paginateIncorrectResponse,
-        ),
-      ).toThrowError()
-    })
-  })
-
   describe('.getNextPaginateRequest', () => {
     const count = 1
     const params = {

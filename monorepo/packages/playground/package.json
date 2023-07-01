@@ -1,0 +1,31 @@
+{
+  "name": "@dbc-tech/rex-playground",
+  "version": "1.0.0",
+  "description": "Rex CRM integration",
+  "author": "DBC",
+  "private": false,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "start": "ts-node src/index",
+    "lint": "eslint . --fix",
+    "build": "rimraf ./dist && tsc --build tsconfig.build.json"
+  },
+  "dependencies": {
+    "@dbc-tech/rex-client": "*",
+    "dotenv": "^16.3.1",
+    "got-cjs": "^12.5.4",
+    "winston": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "ts-node": "^10.9.1",
+    "tsconfig": "*",
+    "typescript": "^5.0.2"
+  },
+  "packageManager": "yarn@1.22.19"
+}
