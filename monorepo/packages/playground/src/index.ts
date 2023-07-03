@@ -15,13 +15,60 @@ const rex = new RexClient({
   },
 })
 
-const start = async () => {
-  const items = await rex.getAccountUsers()
-  for await (const item of items) {
+const getAccountUsers = async () => {
+  const result = await rex.getAccountUsers()
+  for await (const item of result) {
     console.log(item)
   }
 }
 
-;(async () => {
-  await start()
-})()
+const getListings = async () => {
+  const result = await rex.getListings()
+  for await (const item of result) {
+    console.log(item.id)
+  }
+}
+
+const getFeedbacks = async () => {
+  const result = await rex.getFeedbacks()
+  for await (const item of result) {
+    console.log(item)
+  }
+}
+
+const getCustomFieldDefinition = async () => {
+  const result = await rex.getCustomFieldDefinition('listings', false)
+  console.log(result)
+}
+
+const createTab = async () => {
+  const result = await rex.createTab('listings', 'Offer to Own')
+  console.log(result)
+}
+
+const getFieldValues = async () => {
+  const result = await rex.getFieldValues('Listings', '3285032')
+  console.log(result)
+  if (
+    !result['Offer to Own.Offer to Own Links.Buyer Link'] ||
+    result['Offer to Own.Offer to Own Links.Buyer Link'] === 'https://'
+  ) {
+    console.log('create')
+    await createFieldValue()
+  } else {
+    console.log('exists')
+  }
+}
+
+const createFieldValue = async () => {
+  const result = await rex.createFieldValue(
+    'Listings',
+    '3285032',
+    'Offer to Own.Offer to Own Links.Buyer Link',
+    'https://example.com/',
+  )
+  console.log(result)
+}
+
+// eslint-disable-next-line promise/catch-or-return
+getFieldValues().then(console.log)

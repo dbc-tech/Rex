@@ -14,12 +14,12 @@ import {
 import { RexListing, RexAccountUser } from './dtos'
 import { RexFeedback } from './dtos/rex-feedback'
 import { RexConfig } from './interfaces/rex-config'
-import {
-  RexGotHttpRequest,
-  RexRequestBody,
-  RexResponse,
-  RexSearchCriteria,
-} from './interfaces/rex-http.interface'
+import { RexGotRequest } from './interfaces/rex-got-request.ts'
+import { RexPagedSearch } from './interfaces/rex-paged-search'
+import { RexSearchCriteria } from './interfaces/rex-search-criteria'
+import { RexResponse, RexSearchResult } from './interfaces/rex-search-response'
+import { RexField, RexGroup, RexTab, RexTabResult } from './interfaces/rex-tab'
+import { RexFieldValues } from './types/rex-field-values.type'
 
 export class RexClient {
   countLimit: number
@@ -82,22 +82,143 @@ export class RexClient {
     )
   }
 
-  async getCustomFieldDefinition(): Promise<
-    Record<string, boolean | string | any>
-  > {
-    this.logger.debug({ method: 'getCustomFieldDefinition' })
+  async getCustomFieldDefinition(module_name: string, include_hidden: boolean) {
+    this.logger.debug({
+      method: 'getCustomFieldDefinition',
+      module_name,
+      include_hidden,
+    })
 
-    const existingFieldsBody = {
-      module_name: 'listings',
-      include_hidden: false,
+    const body = {
+      module_name,
+      include_hidden,
     }
 
-    const response = await this.http.postJson(
+    const response = await this.http.postJson<RexResponse<RexTabResult>>(
       this.http.urlFromPath('admin-custom-fields/get-definition'),
-      existingFieldsBody,
+      body,
     )
 
-    return response.data
+    return response.data.result
+  }
+
+  async createTab(module_name: string, label: string) {
+    this.logger.debug({ method: 'createTab', module_name, label })
+
+    const body = {
+      data: {
+        module_name,
+        label,
+      },
+    }
+
+    const response = await this.http.postJson<RexResponse<RexTab>>(
+      this.http.urlFromPath('admin-custom-fields/create-tab'),
+      body,
+    )
+
+    return response.data.result
+  }
+
+  async createGroup(tab_id: number, label: string) {
+    this.logger.debug({ method: 'createGroup', tab_id, label })
+
+    const body = {
+      data: {
+        tab_id,
+        label,
+      },
+    }
+
+    const response = await this.http.postJson<RexResponse<RexGroup>>(
+      this.http.urlFromPath('admin-custom-fields/create-group'),
+      body,
+    )
+
+    return response.data.result
+  }
+
+  async createField(
+    group_id: number,
+    label: string,
+    field_type_id: string,
+    display_as: string,
+  ) {
+    this.logger.debug({
+      method: 'createField',
+      group_id,
+      label,
+      field_type_id,
+      display_as,
+    })
+
+    const body = {
+      data: {
+        group_id,
+        label,
+        field_type_id,
+        settings: {
+          display_as,
+        },
+      },
+    }
+
+    const response = await this.http.postJson<RexResponse<RexField>>(
+      this.http.urlFromPath('admin-custom-fields/create-field'),
+      body,
+    )
+
+    return response.data.result
+  }
+
+  async getFieldValues(service_name: string, service_object_id: unknown) {
+    this.logger.debug({
+      method: 'getFieldValues',
+      service_name,
+      service_object_id,
+    })
+
+    const body = {
+      service_name,
+      service_object_id,
+    }
+
+    const response = await this.http.postJson<RexResponse<RexFieldValues>>(
+      this.http.urlFromPath('custom-fields/get-values-keyed-by-field-name'),
+      body,
+    )
+
+    return response.data.result
+  }
+
+  async createFieldValue(
+    service_name: string,
+    service_object_id: unknown,
+    field: string,
+    value: unknown,
+  ) {
+    this.logger.debug({
+      method: 'createFieldValue',
+      service_name,
+      service_object_id,
+      field,
+      value,
+    })
+
+    const body = {
+      service_name,
+      service_object_id,
+      value_map: {
+        [field]: value,
+      },
+    }
+
+    const response = await this.http.postJson<RexResponse<RexFieldValues>>(
+      this.http.urlFromPath('custom-fields/set-field-values'),
+      body,
+    )
+
+    return response.data.result
   }
 
   async paginateSearch<TResult>(
@@ -109,16 +230,12 @@ export class RexClient {
     const requestJson = this.createSearchBody(this.countLimit, params)
     const url = this.http.urlFromPath(path)
 
-    const response: any = this.http.http.paginate<TResult>(url, {
+    const response = this.http.paginate<TResult>(url, {
       json: requestJson,
       pagination: {
         transform: (response): Array<TResult> => {
-          const rex = response.body as RexResponse<TResult>
-          const rows = plainToDto<Array<TResult>>(
-            rex.result.rows,
-            dtoConstructor,
-          )
-          return rows
+          const rex = response.body as RexResponse<RexSearchResult<TResult>>
+          return plainToDto<Array<TResult>>(rex.result.rows, dtoConstructor)
         },
         paginate: ({ currentItems }) => {
           const numberOfItems = currentItems.length
@@ -143,8 +260,8 @@ export class RexClient {
   getNextPaginateRequest(
     numberOfItems: number,
     count: number,
-    requestParams?: RexRequestBody,
-  ): false | RexGotHttpRequest {
+    requestParams?: RexPagedSearch,
+  ): false | RexGotRequest<RexPagedSearch> {
     this.logger.debug({
       method: 'getNextPaginateRequest',
       numberOfItems,
@@ -178,12 +295,12 @@ export class RexClient {
       headers,
     })
 
-    const response: any = await got
+    const response = await got
       .post(url, {
         headers,
         json,
       })
-      .json()
+      .json<{ result: string }>()
 
     return response.result
   }
@@ -192,25 +309,34 @@ export class RexClient {
     countLimit: number,
     params?: RexSearchCriteria,
     offset = 0,
-  ): RexRequestBody {
+  ): RexPagedSearch {
+    if (params) {
+      const req = {
+        ...params,
+        limit: countLimit,
+        offset,
+      }
+      this.logger.debug({
+        method: 'createSearchBody',
+        countLimit,
+        params,
+        offset,
+        req,
+      })
+      return req
+    }
+
+    const req = {
+      limit: countLimit,
+      offset,
+    }
     this.logger.debug({
       method: 'createSearchBody',
       countLimit,
       params,
       offset,
+      req,
     })
-
-    if (params) {
-      return {
-        ...params,
-        limit: countLimit,
-        offset,
-      }
-    }
-
-    return {
-      limit: countLimit,
-      offset,
-    }
+    return req
   }
 }
