@@ -32,6 +32,8 @@ However, it's more likely the base url is provided via `.env` file:
 
 ```
 REX_URL: https://api.rexsoftware.com/v1/rex/
+REX_EMAIL: <your email>
+REX_PASSWORD: <your password>
 ```
 
 In which case this can be passed via `ConfigService` using module's `registerAsync` method:

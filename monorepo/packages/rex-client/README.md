@@ -2,7 +2,7 @@
 
 `rex-client` provides client connectivity to Rex CRM for Node js applications.
 
-To use, create a new instance of the `RexClient` provider and supply base url, client id & api key.
+To use, create a new instance of the `RexClient` provider and supply base url, email & password.
 
 ## Get started
 
