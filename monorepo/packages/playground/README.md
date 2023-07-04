@@ -1,16 +1,13 @@
-# rex-client
+# playground
 
-`rex-client` provides client connectivity to Rex CRM for Node js applications.
+`playground` provides some examples to test the `rex-client`` package.
 
-To use, create a new instance of the `RexClient` provider and supply base url, client id & api key.
+To use, run the following:
 
-## Get started
-
-In your Node application update `package.json` and add the `@dbc-tech/rex-client` package:
-
-```json
-{
-  "dependencies": {
-    "@dbc-tech/rex-client": "^1.0.0"
-}
 ```
+cp .env.example .env
+```
+
+Modify the `REX_EMAIL` & `REX_PASSWORD` vars to suit.
+
+run `yarn start` to test

@@ -17,12 +17,9 @@ const rex = new RexClient({
 
 const getAccountUsers = async () => {
   const result = await rex.getAccountUsers()
-  const agentAccounts: RexAccountUser[] = []
   for await (const item of result) {
-    agentAccounts.push(item)
+    console.log(item)
   }
-
-  return agentAccounts
 }
 
 const getListings = async () => {
@@ -48,17 +45,14 @@ const getCustomFieldDefinition = async () => {
 }
 
 const createTab = async () => {
-  const result = await rex.createTab('listings', 'Offer to Own')
+  const result = await rex.createTab('listings', 'Test')
   console.log(result)
 }
 
 const getFieldValues = async () => {
   const result = await rex.getFieldValues('Listings', '3285032')
   console.log(result)
-  if (
-    !result['Offer to Own.Offer to Own Links.Buyer Link'] ||
-    result['Offer to Own.Offer to Own Links.Buyer Link'] === 'https://'
-  ) {
+  if (!result['Test'] || result['Test'] === 'https://') {
     console.log('create')
     await createFieldValue()
   } else {
@@ -70,7 +64,7 @@ const createFieldValue = async () => {
   const result = await rex.createFieldValue(
     'Listings',
     '3285032',
-    'Offer to Own.Offer to Own Links.Buyer Link',
+    'Test',
     'https://example.com/',
   )
   console.log(result)

@@ -40,7 +40,7 @@ export const rexAccountUsers: RexAccountUser[] = [
       phone_mobile: null,
       position: null,
       profile_bio: null,
-      default_location: { id: '3997', text: 'Offer to Own Test Account' },
+      default_location: { id: '3997', text: 'Test Account' },
       profile_image: null,
     },
     related: { user_groups: [] },
@@ -74,7 +74,7 @@ export const rexAccountUsers: RexAccountUser[] = [
     },
     settings: {
       phone_direct: '0288888888',
-      phone_mobile: '0436345941',
+      phone_mobile: '0400000000',
       position: 'QA Test Account',
       app_color: null,
       email_signature: null,
