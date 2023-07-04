@@ -1,0 +1,5 @@
+export * from './rex-factory.config'
+export * from './rex-factory.module'
+export * from './rex-factory'
+export * from './rex.config'
+export * from './rex.module'

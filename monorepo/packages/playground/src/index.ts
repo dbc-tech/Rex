@@ -1,4 +1,4 @@
-import { RexClient } from '@dbc-tech/rex-client'
+import { RexAccountUser, RexClient } from '@dbc-tech/rex-client'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -17,9 +17,12 @@ const rex = new RexClient({
 
 const getAccountUsers = async () => {
   const result = await rex.getAccountUsers()
+  const agentAccounts: RexAccountUser[] = []
   for await (const item of result) {
-    console.log(item)
+    agentAccounts.push(item)
   }
+
+  return agentAccounts
 }
 
 const getListings = async () => {

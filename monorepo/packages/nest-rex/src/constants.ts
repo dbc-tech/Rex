@@ -1,0 +1,1 @@
+export const REX_FACTORY_CONFIG = 'REX_FACTORY_CONFIG'
