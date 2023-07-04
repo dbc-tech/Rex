@@ -1,0 +1,41 @@
+name: Publish npm packages
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+defaults:
+  run:
+    working-directory: ./monorepo
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Build all
+        run: yarn build
+
+      - name: Unit test all
+        run: yarn test
+
+      - name: Publish Rex client package
+        working-directory: ./monorepo/packages/rex-client
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Publish Rex Nest integration package
+        working-directory: ./monorepo/packages/nest-rex
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
