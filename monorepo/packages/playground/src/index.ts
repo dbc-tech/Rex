@@ -25,7 +25,7 @@ const getAccountUsers = async () => {
 const getListings = async () => {
   const result = await rex.getListings()
   for await (const item of result) {
-    console.log(item.id)
+    console.log(item)
   }
 }
 
@@ -39,6 +39,9 @@ const getFeedbacks = async () => {
 const getCustomFieldDefinition = async () => {
   const result = await rex.getCustomFieldDefinition('listings', false)
   console.log(result)
+  const groups = result.tabs[0].groups
+  const fields = groups[0].fields
+  console.log(fields)
 }
 
 const createTab = async () => {
@@ -71,4 +74,4 @@ const createFieldValue = async () => {
 }
 
 // eslint-disable-next-line promise/catch-or-return
-getFieldValues().then(console.log)
+getCustomFieldDefinition().then(console.log)

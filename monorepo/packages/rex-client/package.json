@@ -24,7 +24,8 @@
     "luxon": "^3.2.1"
   },
   "devDependencies": {
-    "nock": "^13.2.9",
+    "@golevelup/ts-jest": "^0.3.3",
+    "nock": "^13.3.1",
     "tsconfig": "*",
     "typescript": "^5.0.2",
     "winston": "^3.9.0"
