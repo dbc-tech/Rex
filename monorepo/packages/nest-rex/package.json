@@ -1,6 +1,6 @@
 {
   "name": "@dbc-tech/nest-rex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rex Nest integration",
   "author": "DBC",
   "private": false,
