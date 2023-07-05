@@ -1,2 +1,7 @@
 export * from './rex-config'
+export * from './rex-correlation'
+export * from './rex-criteria'
+export * from './rex-paged-search'
 export * from './rex-search-criteria'
+export * from './rex-search-response'
+export * from './rex-tab'
