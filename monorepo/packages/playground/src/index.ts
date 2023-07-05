@@ -1,4 +1,8 @@
-import { RexAccountUser, RexClient } from '@dbc-tech/rex-client'
+import {
+  RexAccountUser,
+  RexClient,
+  RexSearchCriteria,
+} from '@dbc-tech/rex-client'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -30,9 +34,48 @@ const getListings = async () => {
 }
 
 const getFeedbacks = async () => {
-  const result = await rex.getFeedbacks()
+  const searchCriteria: RexSearchCriteria = {
+    criteria: [
+      {
+        name: 'related_listing.property.adr_state_or_region',
+        value: 'QLD',
+      },
+      {
+        name: 'related_listing.listing.listing_category_id',
+        value: 'residential_sale',
+      },
+      {
+        name: 'related_listing.listing.authority_type_id',
+        value: [
+          'setsale',
+          'sale',
+          'other',
+          'exclusive',
+          'sole',
+          'multilist',
+          'conjunctional',
+          'open',
+        ],
+      },
+      {
+        name: 'feedback_type_id',
+        value: ['inspection', 'ofi'],
+      },
+    ],
+    extra_options: {
+      extra_fields: ['related.listing_subcategories'],
+    },
+  }
+
+  const result = await rex.getFeedbacks(searchCriteria)
   for await (const item of result) {
     console.log(item)
+    console.log(item.related)
+    if (item.related.feedback_contacts) {
+      for (const feedback_contact of item.related.feedback_contacts) {
+        console.log(feedback_contact)
+      }
+    }
   }
 }
 
@@ -71,4 +114,4 @@ const createFieldValue = async () => {
 }
 
 // eslint-disable-next-line promise/catch-or-return
-getCustomFieldDefinition().then(console.log)
+getFeedbacks().then(console.log)

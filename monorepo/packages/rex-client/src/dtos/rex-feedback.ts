@@ -4,9 +4,32 @@ import { RexListing, RexListingAgent } from './rex-listing'
 
 export class RexContact {
   id: string
+  system_record_state: string
+  system_ctime: string
+  system_modtime: string
+  name: string
+  email_address: string
+  phone_number: string
+  fax_number: string
+  is_dnd: unknown
+  type: string
+  last_contacted_date: string
   name_first: string
   name_last: string
-  phone_number: string
+  address_postal: unknown
+  address: unknown
+  interest_level: unknown
+  marketing_birthday: unknown
+  marketing_enquiry_source: unknown
+  marketing_gender: unknown
+  marketing_postcode: unknown
+  name_legal: unknown
+  name_salutation: unknown
+  name_addressee: unknown
+  system_owner_user: RexUser
+  contact_image: unknown
+  marketing_enquiry_method: unknown
+  etag: string
 }
 
 export class RexFeedbackContact {
