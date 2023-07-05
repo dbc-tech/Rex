@@ -1,23 +1,24 @@
-import { RexId, RexUser } from './rex-account-user'
+import { RexUser } from './rex-account-user'
+import { RexId } from './rex-id'
 import { RexListing, RexListingAgent } from './rex-listing'
 
-class RexContact {
+export class RexContact {
   id: string
   name_first: string
   name_last: string
   phone_number: string
 }
 
-class RexFeedbackContact {
+export class RexFeedbackContact {
   id: string
   contact: RexContact
 }
 
-class RexFeedbackRelated {
+export class RexFeedbackRelated {
   feedback_contacts: Array<RexFeedbackContact>
 }
 
-class RexFeedbackType {
+export class RexFeedbackType {
   id: string
   text: string
 }

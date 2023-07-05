@@ -2,7 +2,7 @@
   "name": "@dbc-tech/rex",
   "version": "1.0.0",
   "description": "A Node.js HTTP client package for Rex CRM",
-  "repository": "https://github.com/dbc-tech/Rex",
+  "repository": "https://github.com/dbc-tech/rex",
   "license": "MIT",
   "private": true,
   "workspaces": [

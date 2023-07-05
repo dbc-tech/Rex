@@ -1,4 +1,5 @@
-import { RexId, RexUser } from './rex-account-user'
+import { RexUser } from './rex-account-user'
+import { RexId } from './rex-id'
 import {
   RexListingSubCategory,
   RexPropertyCategory,
@@ -59,13 +60,13 @@ export class RexListingRelated {
   listing_subcategories: Array<RexListingSubCategory>
 }
 
-class RexAuthorityType extends RexId {}
+export class RexAuthorityType extends RexId {}
 
-class RexLocation extends RexId {}
+export class RexLocation extends RexId {}
 
-class RexListingCategory extends RexId {}
+export class RexListingCategory extends RexId {}
 
-class RexTenancyType extends RexId {}
+export class RexTenancyType extends RexId {}
 
 export class RexListing {
   id: number

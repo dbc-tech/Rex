@@ -1,4 +1,6 @@
 import { RexAccountUserType } from '../types/rex-account-user.type'
+import { RexId } from './rex-id'
+import { RexLocation } from './rex-listing'
 
 export class RexAccountUser {
   first_name: string
@@ -42,16 +44,6 @@ export class RexAccountUserSetting {
   profile_bio: string
   default_location: RexLocation
   profile_image: string
-}
-
-export class RexId {
-  id: string
-  text?: string
-}
-
-export class RexLocation {
-  id: string
-  text: string
 }
 
 export class RexUserLink {

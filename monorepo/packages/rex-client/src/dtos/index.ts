@@ -1,4 +1,5 @@
 export * from './rex-account-user'
 export * from './rex-feedback'
+export * from './rex-id'
 export * from './rex-listing'
 export * from './rex-listing-categories'
