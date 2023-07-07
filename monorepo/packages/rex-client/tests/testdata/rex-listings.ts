@@ -1,8 +1,8 @@
-import { RexListing } from '../../src'
+import { RexListing, RexListingState } from '../../src'
 
 export const rexListings: RexListing[] = [
   {
-    system_listing_state: 'current',
+    system_listing_state: RexListingState.current,
     system_ctime: 1678757686,
     system_modtime: 1678758163,
     system_publication_time: 1678757782,
@@ -186,7 +186,7 @@ export const rexListings: RexListing[] = [
     id: 3631502,
   },
   {
-    system_listing_state: 'current',
+    system_listing_state: RexListingState.current,
     system_ctime: 1684208381,
     system_modtime: 1684209605,
     system_publication_time: 1684208457,

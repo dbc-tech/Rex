@@ -1,4 +1,4 @@
-import { RexFeedback } from '../../src'
+import { RexFeedback, RexListingState } from '../../src'
 
 export const rexFeedbacks: RexFeedback[] = [
   {
@@ -61,7 +61,7 @@ export const rexFeedbacks: RexFeedback[] = [
         is_account_user: '1',
         profile_image: null,
       },
-      system_listing_state: 'current',
+      system_listing_state: RexListingState.current,
       price_advertise_as: 'Ignore',
       available_from_date: null,
       meta_other_features: null,

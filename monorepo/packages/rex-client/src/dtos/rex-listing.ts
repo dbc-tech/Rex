@@ -1,3 +1,4 @@
+import { RexListingStateType } from '../types/rex-listing-state.type'
 import { RexUser } from './rex-account-user'
 import { RexId } from './rex-id'
 import {
@@ -79,7 +80,7 @@ export class RexListing {
   authority_type?: RexAuthorityType
   authority_date_expires?: string
   authority_date_start?: string
-  system_listing_state: string
+  system_listing_state: RexListingStateType
   system_publication_status?: string
   listing_category: RexListingCategory
   listing_category_name?: string

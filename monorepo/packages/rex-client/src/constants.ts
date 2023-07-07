@@ -5,6 +5,12 @@ export const RexAccountUserStatus = {
   disabled: 'disabled',
 } as const
 
+export const RexListingState = {
+  current: 'current',
+  withdrawn: 'withdrawn',
+  sold: 'sold',
+}
+
 export const DefaultMaskProperties = ['email', 'password']
 
 export const DefaultCountLimit = 50
