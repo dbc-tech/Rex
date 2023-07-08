@@ -27,9 +27,15 @@ const getAccountUsers = async () => {
 }
 
 const getListings = async () => {
-  const result = await rex.getListings()
+  const searchCriteria: RexSearchCriteria = {
+    extra_options: {
+      extra_fields: ['related.listing_subcategories', 'core_attributes'],
+    },
+  }
+  const result = await rex.getListings(searchCriteria)
   for await (const item of result) {
     console.log(item)
+    console.log(item.related?.listing_subcategories)
   }
 }
 
@@ -114,4 +120,4 @@ const createFieldValue = async () => {
 }
 
 // eslint-disable-next-line promise/catch-or-return
-getFeedbacks().then(console.log)
+getListings().then(console.log)

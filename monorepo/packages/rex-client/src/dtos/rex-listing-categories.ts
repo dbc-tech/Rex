@@ -9,7 +9,7 @@ export class RexPropertySubCategory {
 }
 
 export class RexListingSubCategory {
-  priority: string
-  id: string
+  priority: number
+  id: number
   subcategory: RexPropertySubCategory
 }

@@ -184,6 +184,15 @@ export const rexListings: RexListing[] = [
     tenancy_type: { id: 'unknown', text: 'Unknown' },
     lead_auto_response_template: null,
     id: 3631502,
+    related: {
+      listing_subcategories: [
+        {
+          priority: 1,
+          id: 3696428,
+          subcategory: { id: '455', text: 'House' },
+        },
+      ],
+    },
   },
   {
     system_listing_state: RexListingState.current,
@@ -357,5 +366,14 @@ export const rexListings: RexListing[] = [
     tenancy_type: { id: 'unknown', text: 'Unknown' },
     lead_auto_response_template: null,
     id: 3690482,
+    related: {
+      listing_subcategories: [
+        {
+          priority: 1,
+          id: 3696428,
+          subcategory: { id: '455', text: 'House' },
+        },
+      ],
+    },
   },
 ]
