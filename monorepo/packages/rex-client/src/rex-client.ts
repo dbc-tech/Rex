@@ -120,7 +120,7 @@ export class RexClient {
     return response.data.result
   }
 
-  async createGroup(tab_id: number, label: string) {
+  async createGroup(tab_id: string, label: string) {
     this.logger.debug({ method: 'createGroup', tab_id, label })
 
     const body = {
@@ -139,7 +139,7 @@ export class RexClient {
   }
 
   async createField(
-    group_id: number,
+    group_id: string,
     label: string,
     field_type_id: string,
     display_as: string,

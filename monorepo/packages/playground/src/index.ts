@@ -98,6 +98,21 @@ const createTab = async () => {
   console.log(result)
 }
 
+const createGroup = async () => {
+  const result = await rex.createGroup('6987', 'Awesome Group')
+  console.log(result)
+}
+
+const createField = async () => {
+  const result = await rex.createField(
+    '6270',
+    'https://awesome.com',
+    'text',
+    'url',
+  )
+  console.log(result)
+}
+
 const getFieldValues = async () => {
   const result = await rex.getFieldValues('Listings', '3285032')
   console.log(result)
@@ -120,4 +135,4 @@ const createFieldValue = async () => {
 }
 
 // eslint-disable-next-line promise/catch-or-return
-getListings().then(console.log)
+createField().then(console.log)

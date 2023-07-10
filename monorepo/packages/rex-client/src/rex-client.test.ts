@@ -211,7 +211,7 @@ describe('RexClient', () => {
   describe('createGroup', () => {
     it('should call the admin-custom-fields/create-group endpoint with the correct parameters', async () => {
       // Arrange
-      const tab_id = 1
+      const tab_id = '1'
       const label = 'Test Group'
       const httpMock = createMock<HttpService>()
       rexClient.http = httpMock
@@ -242,7 +242,7 @@ describe('RexClient', () => {
   describe('createField', () => {
     it('should call the admin-custom-fields/create-field endpoint with the correct parameters', async () => {
       // Arrange
-      const group_id = 1
+      const group_id = '1'
       const label = 'Test Field'
       const field_type_id = 'text'
       const display_as = 'text'
