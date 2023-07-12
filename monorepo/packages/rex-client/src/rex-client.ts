@@ -55,7 +55,7 @@ export class RexClient {
   async getAccountUsers(criteria?: RexSearchCriteria) {
     this.logger.debug('Method getAccountUsers args', {
       method: 'getAccountUsers',
-      criteria,
+      data: criteria,
     })
 
     return this.paginateSearch<RexAccountUser>(
@@ -68,7 +68,7 @@ export class RexClient {
   async getFeedbacks(criteria?: RexSearchCriteria) {
     this.logger.debug('Method getFeedbacks args', {
       method: 'getFeedbacks',
-      criteria,
+      data: criteria,
     })
 
     return this.paginateSearch<RexFeedback>(
@@ -81,7 +81,7 @@ export class RexClient {
   async getListings(criteria?: RexSearchCriteria) {
     this.logger.debug('Method getListings args', {
       method: 'getListings',
-      criteria,
+      data: criteria,
     })
 
     return this.paginateSearch<RexListing>(
@@ -94,8 +94,10 @@ export class RexClient {
   async getCustomFieldDefinition(module_name: string, include_hidden: boolean) {
     this.logger.debug('Method getCustomFieldDefinition args', {
       method: 'getCustomFieldDefinition',
-      module_name,
-      include_hidden,
+      data: {
+        module_name,
+        include_hidden,
+      },
     })
 
     const body = {
@@ -114,8 +116,10 @@ export class RexClient {
   async createTab(module_name: string, label: string) {
     this.logger.debug('Method createTab args', {
       method: 'createTab',
-      module_name,
-      label,
+      data: {
+        module_name,
+        label,
+      },
     })
 
     const body = {
@@ -136,8 +140,10 @@ export class RexClient {
   async createGroup(tab_id: string, label: string) {
     this.logger.debug('Method createGroup args', {
       method: 'createGroup',
-      tab_id,
-      label,
+      data: {
+        tab_id,
+        label,
+      },
     })
 
     const body = {
@@ -163,10 +169,12 @@ export class RexClient {
   ) {
     this.logger.debug('Method createField args', {
       method: 'createField',
-      group_id,
-      label,
-      field_type_id,
-      display_as,
+      data: {
+        group_id,
+        label,
+        field_type_id,
+        display_as,
+      },
     })
 
     const body = {
@@ -191,8 +199,10 @@ export class RexClient {
   async getFieldValues(service_name: string, service_object_id: unknown) {
     this.logger.debug('Method getFieldValues args', {
       method: 'getFieldValues',
-      service_name,
-      service_object_id,
+      data: {
+        service_name,
+        service_object_id,
+      },
     })
 
     const body = {
@@ -216,10 +226,12 @@ export class RexClient {
   ) {
     this.logger.debug('Method createFieldValue args', {
       method: 'createFieldValue',
-      service_name,
-      service_object_id,
-      field,
-      value,
+      data: {
+        service_name,
+        service_object_id,
+        field,
+        value,
+      },
     })
 
     const body = {
@@ -281,9 +293,11 @@ export class RexClient {
   ): false | RexGotRequest<RexPagedSearch> {
     this.logger.debug('Method getNextPaginateRequest args', {
       method: 'getNextPaginateRequest',
-      numberOfItems,
-      count,
-      requestParams,
+      data: {
+        numberOfItems,
+        count,
+        requestParams,
+      },
     })
 
     if (numberOfItems < this.countLimit) {
@@ -307,9 +321,11 @@ export class RexClient {
 
     this.logger.debug('Method getAccessToken args', {
       method: 'getAccessToken',
-      url: url.toString(),
-      json: this.http.mask(json),
-      headers,
+      data: {
+        url: url.toString(),
+        json: this.http.mask(json),
+        headers,
+      },
     })
 
     const response = await got
@@ -335,10 +351,12 @@ export class RexClient {
       }
       this.logger.debug('Method createSearchBody args & response', {
         method: 'createSearchBody',
-        countLimit,
-        params,
-        offset,
-        req,
+        data: {
+          countLimit,
+          params,
+          offset,
+          req,
+        },
       })
       return req
     }
@@ -349,10 +367,12 @@ export class RexClient {
     }
     this.logger.debug('Method createSearchBody args & response', {
       method: 'createSearchBody',
-      countLimit,
-      params,
-      offset,
-      req,
+      data: {
+        countLimit,
+        params,
+        offset,
+        req,
+      },
     })
     return req
   }
