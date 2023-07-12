@@ -1,6 +1,6 @@
 {
   "name": "@dbc-tech/rex-client",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Rex CRM integration",
   "repository": "https://github.com/dbc-tech/rex",
   "author": "DBC",
@@ -19,7 +19,7 @@
     "build:pack": "yarn run build && yarn pack"
   },
   "dependencies": {
-    "@dbc-tech/http-kit": "^1.4.7",
+    "@dbc-tech/http-kit": "^1.4.8",
     "class-transformer": "^0.5.1",
     "got-cjs": "^12.5.4",
     "luxon": "^3.2.1"
